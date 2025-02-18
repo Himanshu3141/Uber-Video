@@ -56,27 +56,28 @@ module.exports.getDistanceTime = async (origins, destinations) => {
     }
 };
 
-// module.exports.getAutoCompleteSuggestions = async (input) => {
-//     if (!input) {
-//         throw new Error('Input query is required');
-//     }
+module.exports.getAutoCompleteSuggestions=async(input)=>{
+    if(!input){
+        throw new Error('query is required');
+    }
 
-//     const apiKey = process.env.GOOGLE_MAPS_API;
-//     const baseUrl = "https://maps.gomaps.pro/maps/api/place/autocomplete/json"; // Use Places API for autocomplete
-//     const url = `${baseUrl}?input=${encodeURIComponent(input)}&key=${apiKey}`;
+    const apiKey=process.env.GOOGLE_MAPS_API;
+    const baseUrl = "https://maps.gomaps.pro/maps/api/place/autocomplete/json";
+    const url = `${baseUrl}?input=${encodeURIComponent(input)}&key=${apiKey}`;
+    try {
+        const response = await axios.get(url);
 
-//     try {
-//         const response = await axios.get(url);
-//         if (response.data.status === 'OK') {
-//             return response.data.predictions.map(prediction => prediction.description).filter(value => value);
-//         } else {
-//             throw new Error('Unable to fetch suggestions');
-//         }
-//     } catch (err) {
-//         console.error(err);
-//         throw err;
-//     }
-// };
+        if (response.data.status === 'OK') {
+            return response.data.predictions.map(prediction => prediction.description).filter(value => value);
+        } else {
+            throw new Error("Failed to fetch autocomplete results");
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 
 // module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
 //     const captains = await captainModel.find({
