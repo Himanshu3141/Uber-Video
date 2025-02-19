@@ -1,5 +1,6 @@
 const rideModel=require('../models/ride.model');
 const mapsService=require('../services/maps.service');
+const crypto=require('crypto');
 
 
 async function getFare(pickup,destination){
@@ -57,6 +58,7 @@ module.exports.createRide=async({
         user,
         pickup,
         destination,
+        otp:getOtp(6),
         fare: fare[vehicleType],
     });
 

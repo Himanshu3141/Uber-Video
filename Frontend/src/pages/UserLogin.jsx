@@ -16,25 +16,27 @@ const UserLogin = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-    const userData = {
-      email: email,
-      password: password
+  
+    try {
+      const userData = { email, password }
+  
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData);
+  
+      if (response.status === 200) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        navigate('/home');
+      }
+    } catch (error) {
+      console.error('Login failed:', error.response?.data?.message || error.message);
+      alert('Login failed! Please check your credentials.');
     }
-
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData)
-
-    if (response.status === 200) {
-      const data = response.data
-      setUser(data.user)
-      localStorage.setItem('token', data.token)
-      navigate('/home')
-    }
-
-
-    setEmail('')
-    setPassword('')
-  }
+  
+    setEmail('');
+    setPassword('');
+  };
+  
 
   return (
     <div className='p-7 h-screen flex flex-col justify-between'>

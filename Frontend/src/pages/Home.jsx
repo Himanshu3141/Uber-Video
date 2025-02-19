@@ -37,26 +37,26 @@ const Home = () => {
 
     const navigate = useNavigate()
 
-    const { socket } = useContext(SocketContext)
-    const { user } = useContext(UserDataContext)
+    // const { socket } = useContext(SocketContext)
+    // const { user } = useContext(UserDataContext)
 
-    useEffect(() => {
-        socket.emit("join", { userType: "user", userId: user._id })
-    }, [ user ])
+    // useEffect(() => {
+    //     socket.emit("join", { userType: "user", userId: user._id })
+    // }, [ user ])
 
-    socket.on('ride-confirmed', ride => {
+    // socket.on('ride-confirmed', ride => {
 
 
-        setVehicleFound(false)
-        setWaitingForDriver(true)
-        setRide(ride)
-    })
+    //     setVehicleFound(false)
+    //     setWaitingForDriver(true)
+    //     setRide(ride)
+    // })
 
-    socket.on('ride-started', ride => {
-        console.log("ride")
-        setWaitingForDriver(false)
-        navigate('/riding', { state: { ride } }) // Updated navigate to include ride data
-    })
+    // socket.on('ride-started', ride => {
+    //     console.log("ride")
+    //     setWaitingForDriver(false)
+    //     navigate('/riding', { state: { ride } })
+    // })
 
 
     const handlePickupChange = async (e) => {
@@ -194,7 +194,6 @@ const Home = () => {
         <div className='h-screen relative overflow-hidden'>
             <img className='w-16 absolute left-5 top-5' src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="" />
             <div className='h-screen w-screen'>
-                {/* image for temporary use  */}
                 <LiveTracking />
             </div>
             <div className=' flex flex-col justify-end h-screen absolute top-0 w-full'>
@@ -250,8 +249,10 @@ const Home = () => {
             </div>
             <div ref={vehiclePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12'>
                 <VehiclePanel
-                    selectVehicle={setVehicleType}
-                    fare={fare} setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel} />
+                     selectVehicle={setVehicleType}
+                     fare={fare}
+                     setConfirmRidePanel={setConfirmRidePanel} 
+                     setVehiclePanel={setVehiclePanel} />
             </div>
             <div ref={confirmRidePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-6 pt-12'>
                 <ConfirmRide
