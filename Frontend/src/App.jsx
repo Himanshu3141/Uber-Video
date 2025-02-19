@@ -1,4 +1,4 @@
-import './App.css'
+import React, { useContext } from 'react'
 import {Routes,Route} from 'react-router-dom'
 import Start from './pages/Start'
 import UserLogin from './pages/UserLogin'
@@ -13,6 +13,7 @@ import CaptainProtectedWrapper from './pages/CaptainProtectWrapper'
 import CaptainLogout from './pages/CaptainLogout'
 import Riding from './pages/Riding'
 import CaptainRiding from './pages/CaptainRiding'
+import 'remixicon/fonts/remixicon.css'
 
 
 function App() {

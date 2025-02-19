@@ -17,7 +17,6 @@ const ConfirmRide = (props) => {
             <h3 className='text-2xl font-semibold mb-5'>Confirm your Ride</h3>
 
             <div className='flex gap-2 justify-between flex-col items-center'>
-                {/* Dynamically update the image */}
                 <img className='h-20' src={vehicleImages[props.vehicleType]} alt={props.vehicleType} />
 
                 <div className='w-full mt-5'>

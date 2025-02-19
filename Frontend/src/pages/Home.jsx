@@ -8,7 +8,7 @@ import VehiclePanel from '../components/VehiclePanel';
 import ConfirmRide from '../components/ConfirmRide';
 import LookingForDriver from '../components/LookingForDriver';
 import WaitingForDriver from '../components/WaitingForDriver';
-import { SocketContext } from '../context/SocketContext';
+import { SocketContext } from '../context/SocketContext'
 import { useContext } from 'react';
 import { UserDataContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
@@ -37,26 +37,32 @@ const Home = () => {
 
     const navigate = useNavigate()
 
-    // const { socket } = useContext(SocketContext)
-    // const { user } = useContext(UserDataContext)
+    const { socket } = useContext(SocketContext)
+    const { user } = useContext(UserDataContext)
 
-    // useEffect(() => {
-    //     socket.emit("join", { userType: "user", userId: user._id })
-    // }, [ user ])
-
-    // socket.on('ride-confirmed', ride => {
-
-
-    //     setVehicleFound(false)
-    //     setWaitingForDriver(true)
-    //     setRide(ride)
-    // })
-
-    // socket.on('ride-started', ride => {
-    //     console.log("ride")
-    //     setWaitingForDriver(false)
-    //     navigate('/riding', { state: { ride } })
-    // })
+    useEffect(() => {
+        if (!socket) return;  // ✅ Prevents accessing `emit` on `undefined`
+    
+        socket.emit("join", { userType: "user", userId: user?._id });
+    
+        socket.on("ride-confirmed", (ride) => {
+            setVehicleFound(false);
+            setWaitingForDriver(true);
+            setRide(ride);
+        });
+    
+        socket.on("ride-started", (ride) => {
+            setWaitingForDriver(false);
+            navigate("/riding", { state: { ride } });
+        });
+    
+        return () => {
+            socket.off("ride-confirmed");
+            socket.off("ride-started");
+        };
+    }, [user, socket]);  // ✅ Only runs when `socket` is available
+    
+    
 
 
     const handlePickupChange = async (e) => {
@@ -187,7 +193,7 @@ const Home = () => {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-
+       console.log(response.data);
     }
 
     return (
