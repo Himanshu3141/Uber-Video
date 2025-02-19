@@ -21,7 +21,7 @@ const CaptainHome = () => {
     const { captain } = useContext(CaptainDataContext) 
 
     useEffect(() => {
-        if (!socket || !captain) return; // ✅ Prevent undefined errors
+        if (!socket || !captain) return; 
 
         socket.emit('join', {
             userId: captain._id,
@@ -46,7 +46,7 @@ const CaptainHome = () => {
         updateLocation();
 
         return () => clearInterval(locationInterval);
-    }, [socket, captain]); // ✅ Added dependencies
+    }, [socket, captain]); 
 
     useEffect(() => {
         if (!socket) return;
@@ -61,12 +61,12 @@ const CaptainHome = () => {
         return () => {
             socket.off('new-ride', handleNewRide);
         };
-    }, [socket]); // ✅ Prevents multiple event listeners
+    }, [socket]); 
 
     async function confirmRide() {
         try {
             const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm`, {
-                rideId: ride?._id, // ✅ Prevents undefined errors
+                rideId: ride?._id,
                 captainId: captain?._id,
             }, {
                 headers: {
@@ -83,11 +83,11 @@ const CaptainHome = () => {
 
     useGSAP(() => {
         gsap.to(ridePopupPanelRef.current, {
-            yPercent: ridePopupPanel ? 0 : 100, // ✅ Fix GSAP animation
+            yPercent: ridePopupPanel ? 0 : 100,
             opacity: ridePopupPanel ? 1 : 0,
             duration: 0.3, 
             ease: "power2.inOut",
-            display: ridePopupPanel ? 'block' : 'none' // ✅ Ensures correct display behavior
+            display: ridePopupPanel ? 'block' : 'none' 
         });
     }, [ridePopupPanel]);
     

@@ -41,7 +41,7 @@ const Home = () => {
     const { user } = useContext(UserDataContext)
 
     useEffect(() => {
-        if (!socket) return;  // ✅ Prevents accessing `emit` on `undefined`
+        if (!socket) return; 
     
         socket.emit("join", { userType: "user", userId: user?._id });
     
@@ -60,7 +60,7 @@ const Home = () => {
             socket.off("ride-confirmed");
             socket.off("ride-started");
         };
-    }, [user, socket]);  // ✅ Only runs when `socket` is available
+    }, [user, socket]);
     
     
 
