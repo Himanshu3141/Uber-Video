@@ -60,13 +60,17 @@ const captainSchema = new mongoose.Schema({
     },
 
     location: {
-        ltd: {
-            type: Number,
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
         },
-        lng: {
-            type: Number,
+        coordinates: {
+            type: [Number], 
+            required: true
         }
     }
+    
 })
 
 captainSchema.pre("save", async function(next) {
