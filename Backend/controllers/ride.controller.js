@@ -21,6 +21,26 @@ module.exports.createRide = async (req, res) => {
         const ride = await rideService.createRide({ user: req.user._id, pickup, destination, vehicleType });
         return res.status(201).json(ride);
 
+        const pickupCoordinates = await mapsService.getAddressCoordinate(pickup);
+
+
+
+        const captainsInRadius = await mapsService.getCaptainsInTheRadius(pickupCoordinates.ltd, pickupCoordinates.lng, 2);
+
+        ride.otp = ""
+
+        const rideWithUser = await rideModel.findOne({ _id: ride._id }).populate('user');
+
+        captainsInRadius.map(captain => {
+
+            sendMessageToSocketId(captain.socketId, {
+                event: 'new-ride',
+                data: rideWithUser
+            })
+
+        })
+
+
     } catch (err) {
         console.error("Error in createRide:", err);
         return res.status(500).json({ message: err.message });
