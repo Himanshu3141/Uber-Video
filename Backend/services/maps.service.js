@@ -3,7 +3,7 @@ const captainModel = require('../models/captain.model');
 
 module.exports.getAddressCoordinate = async (address) => {
     const apiKey = process.env.GOOGLE_MAPS_API;
-    const baseUrl = "https://maps.gomaps.pro/maps/api/geocode/json"; // ✅ Kept GoMaps API
+    const baseUrl = "https://maps.gomaps.pro/maps/api/geocode/json"; 
     const url = `${baseUrl}?address=${encodeURIComponent(address)}&key=${apiKey}`;
 
     try {
