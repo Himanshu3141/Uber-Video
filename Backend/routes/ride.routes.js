@@ -10,7 +10,7 @@ router.post('/create',
     [
         body('pickup').notEmpty().withMessage('Pickup location is required'),
         body('destination').notEmpty().withMessage('Destination is required'),
-        body('vehicleType').notEmpty().withMessage('Vehicle type is required').isIn(['auto', 'car', 'motorcycle']).withMessage('Vehicle type must be one of auto, car, motorcycle')
+        body('vehicleType').notEmpty().withMessage('Vehicle type is required').isIn(['auto', 'car', 'moto']).withMessage('Vehicle type must be one of auto, car, motorcycle')
     ],
     authMiddleware.authUser,
     rideController.createRide

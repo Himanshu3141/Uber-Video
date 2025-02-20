@@ -27,41 +27,37 @@ const CaptainHome = () => {
             userId: captain._id,
             userType: 'captain'
         });
-
         const updateLocation = () => {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    socket.emit('update-location-captain', {
-                        userId: captain._id,
-                        location: {
-                            ltd: position.coords.latitude,
-                            lng: position.coords.longitude
-                        }
-                    });
+            navigator.geolocation.getCurrentPosition(position => {
+                console.log({
+                    userId: captain._id,
+                    location: {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    }
+                })
+                socket.emit('update-location-captain', {
+                userId: captain._id,
+                location: {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                }
                 });
+            });
             }
         };
 
         const locationInterval = setInterval(updateLocation, 10000);
         updateLocation();
 
-        return () => clearInterval(locationInterval);
-    }, [socket, captain]); 
+        // return () => clearInterval(locationInterval);
+    }, []); 
 
-    useEffect(() => {
-        if (!socket) return;
-
-        const handleNewRide = (data) => {
-            setRide(data);
-            setRidePopupPanel(true);
-        };
-
-        socket.on('new-ride', handleNewRide);
-
-        return () => {
-            socket.off('new-ride', handleNewRide);
-        };
-    }, [socket]); 
+    socket.on('new-ride',(data)=>{
+        setRide(data)
+        setRidePopupPanel(true)
+    })
 
     async function confirmRide() {
         try {
