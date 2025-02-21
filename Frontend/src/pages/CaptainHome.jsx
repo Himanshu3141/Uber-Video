@@ -21,40 +21,49 @@ const CaptainHome = () => {
     const { captain } = useContext(CaptainDataContext) 
 
     useEffect(() => {
-        if (!socket || !captain) return; 
-
+        if (!socket || !captain) return;
+    
         socket.emit('join', {
             userId: captain._id,
             userType: 'captain'
         });
+    
         const updateLocation = () => {
             if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                console.log({
-                    userId: captain._id,
-                    location: {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    }
-                })
-                socket.emit('update-location-captain', {
-                userId: captain._id,
-                location: {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                }
-                });
-            });
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+    
+                        if (lat == null || lng == null) {
+                            console.warn("Invalid coordinates received:", { lat, lng });
+                            return;
+                        }
+    
+                        console.log({
+                            userId: captain._id,
+                            location: { lat, lng }
+                        });
+    
+                        socket.emit("update-location-captain", {
+                            userId: captain._id,
+                            location: { lat, lng }
+                        });
+                    },
+                    (error) => console.warn("Geolocation Error:", error.message)
+                );
             }
         };
-
+    
         const locationInterval = setInterval(updateLocation, 10000);
         updateLocation();
-
-        // return () => clearInterval(locationInterval);
-    }, []); 
+    
+        // return () => clearInterval(locationInterval); 
+    }, [socket, captain]);
+    
 
     socket.on('new-ride',(data)=>{
+        console.log(data)
         setRide(data)
         setRidePopupPanel(true)
     })

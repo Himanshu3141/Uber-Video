@@ -10,9 +10,9 @@ const rideSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'captain',
     },
-    pickup: {
-        type: String,
-        required: true
+    pickup: { 
+        type: String,  
+        required: true,
     },
     destination: {
         type: String,

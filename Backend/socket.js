@@ -41,7 +41,7 @@ function initializeSocket(server) {
             try {
                 await captainModel.findByIdAndUpdate(userId, {
                     location: {
-                        ltd: location.ltd,
+                        lat: location.lat,
                         lng: location.lng
                     }
                 });

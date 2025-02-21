@@ -7,45 +7,51 @@ const rideModel=require('../models/ride.model')
 module.exports.createRide = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.error("Validation Errors:", errors.array());
         return res.status(400).json({ errors: errors.array() });
     }
 
     const { userId, pickup, destination, vehicleType } = req.body;
 
     if (!pickup || !destination || !vehicleType) {
-         res.status(400).json({ message: "Missing required fields" });
+        return res.status(400).json({ message: "Missing required fields" });
     }
 
     try {
-        const ride = await rideService.createRide({ user: req.user._id, pickup, destination, vehicleType });
-         res.status(201).json(ride);
+        const ride = await rideService.createRide({ 
+            user: req.user._id, 
+            pickup, 
+            destination, 
+            vehicleType,
+        });
+
+        res.status(201).json(ride);
 
         const pickupCoordinates = await mapsService.getAddressCoordinate(pickup);
-        console.log("pickup coordinates:",pickupCoordinates);
+        console.log(pickupCoordinates);
 
+        const captainsInRadius = await mapsService.getCaptainsInTheRadius(
+            pickupCoordinates.lat, 
+            pickupCoordinates.lng, 
+            2
+        );
 
-        const captainsInRadius = await mapsService.getCaptainsInTheRadius(pickupCoordinates.ltd, pickupCoordinates.lng, 2);
-
-        ride.otp = ""
+        console.log(captainsInRadius);
 
         const rideWithUser = await rideModel.findOne({ _id: ride._id }).populate('user');
 
         captainsInRadius.map(captain => {
-
             sendMessageToSocketId(captain.socketId, {
                 event: 'new-ride',
                 data: rideWithUser
-            })
-
-        })
-
+            });
+        });
 
     } catch (err) {
-        console.error("Error in createRide:", err);
+        console.log(err);
         return res.status(500).json({ message: err.message });
     }
 };
+
 
 module.exports.getFare = async (req, res) => {
     const errors = validationResult(req);

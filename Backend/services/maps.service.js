@@ -3,7 +3,7 @@ const captainModel = require('../models/captain.model');
 
 module.exports.getAddressCoordinate = async (address) => {
     const apiKey = process.env.GOOGLE_MAPS_API;
-    const baseUrl = "https://maps.gomaps.pro/maps/api/geocode/json"; 
+    const baseUrl = "https://maps.gomaps.pro/maps/api/geocode/json";
     const url = `${baseUrl}?address=${encodeURIComponent(address)}&key=${apiKey}`;
 
     try {
@@ -29,15 +29,16 @@ module.exports.getDistanceTime = async (origins, destinations) => {
     }
 
     const apiKey = process.env.GOOGLE_MAPS_API;
-    const baseUrl = "https://maps.gomaps.pro/maps/api/distancematrix/json"; // ✅ Kept GoMaps API
+    const baseUrl = "https://maps.gomaps.pro/maps/api/distancematrix/json"; 
     const url = `${baseUrl}?origins=${encodeURIComponent(origins)}&destinations=${encodeURIComponent(destinations)}&key=${apiKey}`;
 
     try {
+
+
         const response = await axios.get(url);
         if (response.data.status === 'OK') {
             const element = response.data.rows[0].elements[0];
-
-            if (element.status === 'ZERO_RESULTS') {
+            if (response.data.rows[ 0 ].elements[ 0 ].status === 'ZERO_RESULTS') {
                 throw new Error('No routes found');
             }
 
@@ -48,45 +49,43 @@ module.exports.getDistanceTime = async (origins, destinations) => {
         } else {
             throw new Error('Unable to fetch distance and time');
         }
+
     } catch (err) {
         console.error(err);
         throw err;
     }
 };
 
-module.exports.getAutoCompleteSuggestions = async (input) => {
-    if (!input) {
-        throw new Error('Query is required');
+module.exports.getAutoCompleteSuggestions=async(input)=>{
+    if(!input){
+        throw new Error('query is required');
     }
 
-    const apiKey = process.env.GOOGLE_MAPS_API;
-    const baseUrl = "https://maps.gomaps.pro/maps/api/place/autocomplete/json"; // ✅ Kept GoMaps API
+    const apiKey=process.env.GOOGLE_MAPS_API;
+    const baseUrl = "https://maps.gomaps.pro/maps/api/place/autocomplete/json";
     const url = `${baseUrl}?input=${encodeURIComponent(input)}&key=${apiKey}`;
-
     try {
         const response = await axios.get(url);
 
         if (response.data.status === 'OK') {
-            return response.data.predictions
-                .map(prediction => prediction.description)
-                .filter(value => value);
+            return response.data.predictions.map(prediction => prediction.description).filter(value => value);
         } else {
             throw new Error("Failed to fetch autocomplete results");
         }
     } catch (error) {
         console.error(error);
-        throw new Error("Internal server error"); 
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
-module.exports.getCaptainsInTheRadius = async (lat, lng, radius) => {
+
+module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
     const captains = await captainModel.find({
         location: {
             $geoWithin: {
-                $centerSphere: [[lng, lat], radius / 6371] 
+                $centerSphere: [[ltd, lng], radius / 6371]
             }
         }
     });
-
     return captains;
-};
+}
